@@ -12,6 +12,7 @@ enum State{
 
 struct Elevator{
     enum State currentState;
+    int direction; //1 opp 0 ned
     int lastFloor;
     int targetFloor;
     int timer;
