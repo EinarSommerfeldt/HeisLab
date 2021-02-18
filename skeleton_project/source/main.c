@@ -37,7 +37,6 @@ int main(){
     hardware_command_movement(HARDWARE_MOVEMENT_UP);
     int iteration = 0;
     while(1){
-        iteration+=1;
         //Elevator variabel-oppdateringer
         elev.obstruction = hardware_read_obstruction_signal();
         elev.stop_button = hardware_read_stop_signal();
@@ -64,12 +63,8 @@ int main(){
         
         if ((elev.obstruction && elev.open_door) || elev.stop_button || hardware_read_order(1, HARDWARE_ORDER_INSIDE) || getTimer(&elev) < 3) {
             elev.currentState = STOP;
-            hardware_command_movement(HARDWARE_MOVEMENT_STOP);
-            if (iteration%100 == 0) {
-                printf("%d %d %d %d\n", (elev.obstruction && elev.open_door), elev.stop_button, hardware_read_order(1, HARDWARE_ORDER_INSIDE), getTimer(&elev));
-            }
-            
-            //stopElev();
+            hardware_command_movement(HARDWARE_MOVEMENT_STOP);      
+            stopElev();
 
             //works, but doesnt start motor again
         }
