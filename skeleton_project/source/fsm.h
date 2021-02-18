@@ -1,6 +1,9 @@
 #include "hardware.h"
 #include "time.h"
 
+#ifndef FSM_H
+#define FSM_H
+
 enum State{
     UP,
     DOWN,
@@ -26,3 +29,14 @@ void setNextFloor(struct Elevator* elev, int floor);
 void stopElev();
 void startTimer(struct Elevator* elev);
 int getTimer(struct Elevator* elev);
+
+
+
+
+
+
+
+
+
+
+#endif
