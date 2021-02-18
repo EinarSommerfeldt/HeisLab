@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include "hardware.h"
+#include "fsm.h"
 
 static void clear_all_order_lights(){
     HardwareOrder order_types[3] = {
@@ -26,12 +27,24 @@ int main(){
         exit(1);
     }
     
+    struct Elevator elev;
+    elev.startTime = 0;
+    elev.currentState = 0;
+
     printf("=== Example Program ===\n");
     printf("Press the stop button on the elevator panel to exit\n");
 
     hardware_command_movement(HARDWARE_MOVEMENT_UP);
-
+    int iteration = 0;
     while(1){
+        iteration+=1;
+        //Elevator variabel-oppdateringer
+        elev.obstruction = hardware_read_obstruction_signal();
+        elev.stop_button = hardware_read_stop_signal();
+        getTimer(&elev);
+
+
+
         if(hardware_read_stop_signal()){
             hardware_command_movement(HARDWARE_MOVEMENT_STOP);
             break;
@@ -47,6 +60,25 @@ int main(){
             hardware_command_movement(HARDWARE_MOVEMENT_DOWN);
         }
 
+        //stop-logikk:
+        
+        if ((elev.obstruction && elev.open_door) || elev.stop_button || hardware_read_order(1, HARDWARE_ORDER_INSIDE) || getTimer(&elev) < 3) {
+            elev.currentState = STOP;
+            hardware_command_movement(HARDWARE_MOVEMENT_STOP);
+            if (iteration%100 == 0) {
+                printf("%d %d %d %d\n", (elev.obstruction && elev.open_door), elev.stop_button, hardware_read_order(1, HARDWARE_ORDER_INSIDE), getTimer(&elev));
+            }
+            
+            //stopElev();
+
+            //works, but doesnt start motor again
+        }
+
+        
+
+
+
+
         /* All buttons must be polled, like this: */
         for(int f = 0; f < HARDWARE_NUMBER_OF_FLOORS; f++){
             if(hardware_read_floor_sensor(f)){
@@ -58,6 +90,8 @@ int main(){
         for(int f = 0; f < HARDWARE_NUMBER_OF_FLOORS; f++){
             /* Internal orders */
             if(hardware_read_order(f, HARDWARE_ORDER_INSIDE)){
+                //call queue add command
+                //setNextFloor(elev,f)
                 hardware_command_order_light(f, HARDWARE_ORDER_INSIDE, 1);
             }
 
