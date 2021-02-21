@@ -3,6 +3,7 @@
 #include <signal.h>
 #include "hardware.h"
 #include "fsm.h"
+#include "elevator.h"
 
 static void clear_all_order_lights(){
     HardwareOrder order_types[3] = {
@@ -27,19 +28,17 @@ int main(){
         exit(1);
     }
     
-    struct Elevator elev;
-    elev.startTime = 0;
-    elev.currentState = 0;
+    Elevator elev;
+    elevator_configure(&elev);
 
     printf("=== Example Program ===\n");
     printf("Press the stop button on the elevator panel to exit\n");
 
     hardware_command_movement(HARDWARE_MOVEMENT_UP);
-    int iteration = 0;
     while(1){
         //Elevator variabel-oppdateringer
         elev.obstruction = hardware_read_obstruction_signal();
-        elev.stop_button = hardware_read_stop_signal();
+        elev.stopButton = hardware_read_stop_signal();
         getTimer(&elev);
 
 
@@ -64,7 +63,6 @@ int main(){
         if ((elev.obstruction && elev.open_door) || elev.stop_button || hardware_read_order(1, HARDWARE_ORDER_INSIDE) || getTimer(&elev) < 3) {
             elev.currentState = STOP;
             hardware_command_movement(HARDWARE_MOVEMENT_STOP);      
-            stopElev();
 
             //works, but doesnt start motor again
         }

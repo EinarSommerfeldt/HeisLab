@@ -5,20 +5,17 @@
 
 #include "hardware.h"
 #include "fsm.h"
+#include "elevator.h"
 
 #ifndef QUEUE_H
 #define QUEUE_H
 
-typedef enum {
-    ORDER_NONE,
-    ORDER_UP,
-    ORDER_DOWN,
-    ORDER_BOTH,
-    ORDER_INSIDE
-} ElevatorOrder;
+
+
 
 typedef struct  {
     ElevatorOrder orders[4];
+
 } Queue;
 
 
@@ -56,12 +53,12 @@ void queue_clearOrder(Queue* queue, int floor);
  * Prioritizes floors in the direction the elevator is already going.
  * 
  * @param[in] queue Queue object owned by the elevator.
- * @param[in] latestFloor Last floor the elevator visited. Does not care if the elevator stopped there or not.
+ * @param[in] lastFloor Last floor the elevator visited. Does not care if the elevator stopped there or not.
  * @param[in] currentDir The direction the elevator is travelling in.
  * 
  * @return Returns the next floor the elevator should go to as an int from 1-4. Returns 0 if there are no orders. 
  */
-int queue_getNext(Queue* queue, int lastesFloor, int currentDir);
+int queue_getNext(Queue* queue, int lastFloor, int currentDir);
 
 
 
