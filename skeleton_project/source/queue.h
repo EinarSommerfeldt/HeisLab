@@ -9,71 +9,60 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
+typedef enum {
+    ORDER_NONE,
+    ORDER_UP,
+    ORDER_DOWN,
+    ORDER_BOTH,
+    ORDER_INSIDE
+} ElevatorOrder;
 
-struct Node {
-    int value;
-    struct Node* next;
-    struct Node* prev;
-};
+typedef struct  {
+    ElevatorOrder orders[4];
+} Queue;
 
-struct Queue {
-    struct Node* head;
-    struct Node* tail; 
-};
 
 
 
 //Queue funksjoner------------------------------------------------------------------------------------------
 /**
- * @brief Constructor for the queue object.
+ * @brief Constructor for the Queue object.
  *
- * @return Pointer to the new queue object.
+ * @return Pointer to the new Queue object.
  */
-struct Queue* queue_new();
-
+Queue* queue_new();
 
 /**
- * @brief Adds a new floor to the queue
+ * @brief Method for adding an order to a queue.
  *
- * @param queue[in,out] Queue the floor will be added to.
- * @param elev[in] Elevator that owns the queue.
- * @param floor[in] Floor to be added.
- * @param direction[in] Which direction the order is.
+ * @warning Takes a floor not an index, starts counting at 1.
+ * @param[in,out] queue Queue the order is added to.
+ * @param[in] floor The floor the order came from.
+ * @param[in] order Which direction was pressed.
  */
-void queue_addFloor(struct Queue* queue, struct Elevator* elev, int floor, int direction);
+void queue_addOrder(Queue* queue, int floor, ElevatorOrder order);
 
 /**
- * @brief Adds a node in the queue in front of the input node.
+ * @brief Method for removing orders for a floor from a queue.
  *
- * @param queue[in,out] Queue the floor will be added to.
- * @param node[in,out] Node to be inserted.
- * @param value[in] Value for the new node.
+ * @warning Takes a floor not an index, starts counting at 1.
+ * @param[in,out] queue Queue the order is cleared from.
+ * @param[in] floor The floor where orders are cleared.
+ */
+void queue_clearOrder(Queue* queue, int floor);
+
+/**
+ * @brief Returns the next floor the elevator should go to. 
+ * Prioritizes floors in the direction the elevator is already going.
  * 
- * @return pointer to the new node 
- */
-struct Node* queue_insertNode(struct Queue* queue, struct Node* node, int value);
-
-/**
- * @brief Removes a node from the queue and frees the node from memory.
- *
- * @param queue[in,out] Queue the node will be removed from.
- * @param node[in,out] Node to be removed.
+ * @param[in] queue Queue object owned by the elevator.
+ * @param[in] latestFloor Last floor the elevator visited. Does not care if the elevator stopped there or not.
+ * @param[in] currentDir The direction the elevator is travelling in.
  * 
+ * @return Returns the next floor the elevator should go to as an int from 1-4. Returns 0 if there are no orders. 
  */
-void queue_removeNode(struct Queue* queue, struct Node* node);
+int queue_getNext(Queue* queue, int lastesFloor, int currentDir);
 
-
-/**
- * @brief Removes the first node in the queue and returns it's value
- *
- * @param queue[in] Queue struct.
- * 
- * @return Value of the first node.
- */
-int queue_pop(struct Queue* queue); 
-
-//Node funksjoner
-struct Node* node_new(int value);
 
 
 
