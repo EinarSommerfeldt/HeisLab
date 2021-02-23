@@ -46,10 +46,8 @@ int hardware_init() {
     char port[8] = "15657";
 
     pthread_mutex_init(&sockmtx, NULL);
-
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     assert(sockfd != -1 && "Unable to set up socket");
-
     struct addrinfo hints = {
         .ai_family      = AF_INET,
         .ai_socktype    = SOCK_STREAM,
@@ -60,7 +58,6 @@ int hardware_init() {
 
     int fail = connect(sockfd, res->ai_addr, res->ai_addrlen);
     assert(fail == 0 && "Unable to connect to simulator server");
-
     freeaddrinfo(res);
 
     send(sockfd, (char[4]) {0}, 4, 0);

@@ -2,57 +2,60 @@
  * @file
  */
 #include "queue.h"
+#include "structs.h"
+#include <stdio.h>
 
 
-//Queue funksjoner
-
-
-Queue* queue_new()
+struct Queue* queue_new()
 {
-    Queue* queue = malloc(sizeof(Queue));
-    for (int i{0}; i < 4; i++ ) {
+    struct Queue* queue = malloc(sizeof(struct Queue));
+    for (int i = 0; i < 4; i++ ) {
         queue->orders[i] = ORDER_NONE;
     }
 
     return queue;
 }
 
-void queue_addOrder(Queue* queue, int floor, ElevatorOrder order) {
-    ElevatorOrder prevOrder = queue->orders[floor-1];
+void queue_addOrder(struct Queue* queue, int floor, enum ElevatorOrder order) {
+    enum ElevatorOrder prevOrder = queue->orders[floor];
     if (prevOrder == order || prevOrder == ORDER_NONE || order == ORDER_INSIDE) {
-        queue->orders[floor-1] = order; 
+        queue->orders[floor] = order; 
     } else {
-        queue->orders[floor-1] = ORDER_BOTH;
+        queue->orders[floor] = ORDER_BOTH;
     }
 }
 
-void queue_clearOrder(Queue* queue, int floor) {
-    queue->orders[floor-1] = ORDER_NONE;
+void queue_clearOrder(struct Queue* queue, int floor) {
+    queue->orders[floor] = ORDER_NONE;
 }
 
-int queue_getNext(Queue* queue, int lastFloor , int currentDir) {
+int queue_getNext(struct Queue* queue, int lastFloor , int targetFloor, int currentDir) {
+    if (lastFloor < 0) {
+        return -1;
+    }
     if (currentDir) { //The elevator is going up
-        for (int i{lastFloor-1}; i < 4; i++) {
+        for (int i = lastFloor; i < 4; i++) {
             if(queue->orders[i] == ORDER_UP || queue->orders[i] == ORDER_INSIDE || queue->orders[i] == ORDER_BOTH) {
-                return i+1;
+                return i;
             }
         }
-        for (int i{lastFloor-1}; i>-1; i--) {
-            if (queue->orders[i] != ORDER_NONE) {
-                return i+1;
+        for (int i = 0; i < 4; i++) { //Viable stops on the way down
+            if(queue->orders[i] == ORDER_DOWN) {
+                return i;
             }
         }
     } else {    //The elevator is going down
-        for (int i{lastFloor-1}; i > -1; i--) {
+        for (int i = lastFloor; i > -1; i--) { //Viable stops on the way down
             if(queue->orders[i] == ORDER_DOWN || queue->orders[i] == ORDER_INSIDE || queue->orders[i] == ORDER_BOTH) {
-                return i+1;
+                return i;
             }
         }
-        for (int i{lastFloor-1}; i < 4; i++) {
-            if(queue->orders[i] != ORDER_NONE) {
-                return i+1;
+        for (int i = 0; i < 4; i++) { 
+            if(queue->orders[i] == ORDER_UP) {
+                return i;
             }
         }
     }
-    return 0; //Returns 0 if there are no orders on any floors.
+
+    return -1;
 }
