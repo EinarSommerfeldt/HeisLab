@@ -15,7 +15,7 @@ void fsm_update(struct Elevator* elev)
             elev->currentState = EMERGENCY;
         }  else if (elev->targetFloor == -1) {
             elev->currentState = STILL;
-        } else if (elev->targetFloor == elev->lastFloor) {
+        } else if (elev->targetFloor == elev->lastFloor && elev->onFloor == 1) {
             elev->currentState = OPEN;
             timer_start(&elev->startTime);
         }
@@ -23,7 +23,7 @@ void fsm_update(struct Elevator* elev)
     case STILL:
         if (elev->stopButton) {
             elev->currentState = EMERGENCY;
-        } else if (elev->targetFloor == elev->lastFloor) {
+        } else if (elev->targetFloor == elev->lastFloor && elev->onFloor == 1) {
             elev->currentState = OPEN;
         } else if (elev->targetFloor != -1) {
             elev->currentState = RUNNING;

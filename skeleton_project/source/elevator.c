@@ -39,12 +39,12 @@ void elevator_loop(struct Elevator* elev) {
             hardware_command_door_open(0);
             if (elev->targetFloor > elev->lastFloor) {
                 elev->direction = 1;
-                if (elev->lastFloor != 3) { //Elevator should not go out of bounds
+                if (!hardware_read_floor_sensor(3)) { //Elevator should not go out of bounds
                     hardware_command_movement(HARDWARE_MOVEMENT_UP);
                 }
             } else {
                 elev->direction = 0;
-                if (elev->lastFloor != 0) { //Elevator should not go out of bounds
+                if (!hardware_read_floor_sensor(0)) { //Elevator should not go out of bounds
                     hardware_command_movement(HARDWARE_MOVEMENT_DOWN);
                 }
             }
