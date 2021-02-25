@@ -4,6 +4,8 @@
 #include "time.h"
 #include "queue.h"
 #include "hardware.h"
+#include "timer.h"
+#include "fsm.h"
 #include <stdlib.h>
 
 
@@ -21,12 +23,8 @@ void elevator_OnStopButton(struct Elevator* elev);
 
 void elevator_setNextFloor(struct Elevator* elev, int floor);
 
-void elevator_startTimer(struct Elevator* elev);
 
 
-int elevator_getTimer(struct Elevator* elev);
-
-void fsm_update(struct Elevator* elev); 
 
 
 

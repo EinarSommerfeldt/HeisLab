@@ -39,19 +39,19 @@ int queue_getNext(struct Queue* queue, int lastFloor , int targetFloor, int curr
                 return i;
             }
         }
-        for (int i = 0; i < 4; i++) { //Viable stops on the way down
-            if(queue->orders[i] == ORDER_DOWN) {
+        for (int i = 0; i < 4; i++) { 
+            if(queue->orders[i] != ORDER_NONE) {
                 return i;
             }
         }
     } else {    //The elevator is going down
-        for (int i = lastFloor; i > -1; i--) { //Viable stops on the way down
+        for (int i = lastFloor; i > -1; i--) { 
             if(queue->orders[i] == ORDER_DOWN || queue->orders[i] == ORDER_INSIDE || queue->orders[i] == ORDER_BOTH) {
                 return i;
             }
         }
         for (int i = 0; i < 4; i++) { 
-            if(queue->orders[i] == ORDER_UP) {
+            if(queue->orders[i] != ORDER_NONE) {
                 return i;
             }
         }

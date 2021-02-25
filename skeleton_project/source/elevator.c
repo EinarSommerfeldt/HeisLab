@@ -1,6 +1,7 @@
 #include "elevator.h"
 #include <stdio.h>
 
+
 void elevator_init(struct Elevator* elev) {
     elev->currentState = INIT;
     elev->queue = queue_new();
@@ -18,9 +19,13 @@ void elevator_loop(struct Elevator* elev) {
     while (1) {
         
         iterator++;
-        if (iterator%19 == 0) {
-            printf("State: %d, timer: %d, target: %d\n", elev->currentState, elevator_getTimer(elev), elev->targetFloor);
-        } 
+        if (iterator%100 == 0) {
+            printf("State: %d, timer: %d, target: %d\n", elev->currentState, timer_get(&(elev->startTime)), elev->targetFloor);
+            for (int i = 0; i < 4; i++) {
+                printf("Order floor %d: %d\n", i, elev->queue->orders[i]);
+                printf("Onfloor: %d\n", elev->onFloor);
+            }
+        }  
         
         elevator_update(elev);
         
@@ -34,10 +39,14 @@ void elevator_loop(struct Elevator* elev) {
             hardware_command_door_open(0);
             if (elev->targetFloor > elev->lastFloor) {
                 elev->direction = 1;
-                hardware_command_movement(HARDWARE_MOVEMENT_UP);
+                if (elev->lastFloor != 3) { //Elevator should not go out of bounds
+                    hardware_command_movement(HARDWARE_MOVEMENT_UP);
+                }
             } else {
                 elev->direction = 0;
-                hardware_command_movement(HARDWARE_MOVEMENT_DOWN);
+                if (elev->lastFloor != 0) { //Elevator should not go out of bounds
+                    hardware_command_movement(HARDWARE_MOVEMENT_DOWN);
+                }
             }
             break;
         case STILL:
@@ -146,67 +155,4 @@ void elevator_setNextFloor(struct Elevator* elev, int floor){
     elev->targetFloor = requested_floor; //add queue logic later
 }
 
-void elevator_startTimer(struct Elevator* elev) {
-    elev->startTime = clock()/CLOCKS_PER_SEC;
-}
 
-
-int elevator_getTimer(struct Elevator* elev) {
-    return clock()/CLOCKS_PER_SEC - elev->startTime; 
-}
-
-
-void fsm_update(struct Elevator* elev)
-{
-    switch (elev->currentState)
-    {
-    case INIT:
-        if (elev->lastFloor > -1) {
-            elev->currentState = RUNNING;
-            break;
-        }
-        break;
-    case RUNNING:
-        if (elev->stopButton) {
-            elev->currentState = EMERGENCY;
-        }  else if (elev->targetFloor == -1) {
-            elev->currentState = STILL;
-        } else if (elev->targetFloor == elev->lastFloor) {
-            elev->currentState = OPEN;
-            elevator_startTimer(elev);
-        }
-        break;
-    case STILL:
-        if (elev->stopButton) {
-            elev->currentState = EMERGENCY;
-        } else if (elev->targetFloor != -1) {
-            elev->currentState = RUNNING;
-        }
-        break;
-    case OPEN:
-        if (elev->stopButton) {
-            elev->currentState = EMERGENCY;
-        } else if (elev->obstruction) {
-            elev->currentState = OBSTRUCTED;
-        } else if (elevator_getTimer(elev) > 2 ) {
-            elev->currentState = RUNNING;
-        }
-        break;
-    case OBSTRUCTED:
-        if (elev->stopButton) {
-            elev->currentState = EMERGENCY;
-        } else if (!elev->obstruction) {
-            elev->currentState = OPEN;
-            elevator_startTimer(elev);
-        }
-        break;
-    case EMERGENCY:
-        if (!elev->stopButton && elev->onFloor) {
-            elev->currentState = OPEN;
-            elevator_startTimer(elev);
-        } else if (!elev->stopButton) {
-            elev->currentState = RUNNING;
-        }
-        break;
-    } 
-}

@@ -28,7 +28,7 @@ int main(){
         fprintf(stderr, "Unable to initialize hardware\n");
         exit(1);
     }
-    
+
     struct Elevator elev;
     elevator_init(&elev);
 
