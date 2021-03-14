@@ -1,5 +1,5 @@
 #ifndef ELEVATOR_H
-#define ELEAVTOR_H
+#define ELEVATOR_H
 #include "structs.h"
 #include "time.h"
 #include "queue.h"
