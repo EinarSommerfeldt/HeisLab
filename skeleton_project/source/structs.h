@@ -28,7 +28,6 @@ struct Elevator{
     int direction; //1 opp 0 ned
     int lastFloor;
     int targetFloor;
-    int timer;
     int obstruction;
     int stopButton;
     int startTime;
