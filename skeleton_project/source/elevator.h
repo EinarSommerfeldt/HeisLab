@@ -21,7 +21,6 @@ void elevator_reachedFloor(struct Elevator* elev, int floor);
 
 void elevator_OnStopButton(struct Elevator* elev);
 
-void elevator_setNextFloor(struct Elevator* elev, int floor);
 
 
 
