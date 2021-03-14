@@ -150,9 +150,5 @@ void elevator_OnStopButton(struct Elevator* elev){
     hardware_command_movement(HARDWARE_MOVEMENT_STOP);   
 }
 
-void elevator_setNextFloor(struct Elevator* elev, int floor){
-    int requested_floor = floor; //get form hardware
-    elev->targetFloor = requested_floor; //add queue logic later
-}
 
 
