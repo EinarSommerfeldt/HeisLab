@@ -2,25 +2,11 @@
  * @file
  * @brief Queue-system for the elevator
  */
-
-#include "hardware.h"
-#include "fsm.h"
-
 #ifndef QUEUE_H
 #define QUEUE_H
 
-typedef enum {
-    ORDER_NONE,
-    ORDER_UP,
-    ORDER_DOWN,
-    ORDER_BOTH,
-    ORDER_INSIDE
-} ElevatorOrder;
-
-typedef struct  {
-    ElevatorOrder orders[4];
-} Queue;
-
+#include <stdlib.h>
+#include "structs.h"
 
 
 
@@ -30,52 +16,36 @@ typedef struct  {
  *
  * @return Pointer to the new Queue object.
  */
-Queue* queue_new();
+struct Queue* queue_new();
 
 /**
  * @brief Method for adding an order to a queue.
  *
- * @warning Takes a floor not an index, starts counting at 1.
  * @param[in,out] queue Queue the order is added to.
  * @param[in] floor The floor the order came from.
  * @param[in] order Which direction was pressed.
  */
-void queue_addOrder(Queue* queue, int floor, ElevatorOrder order);
+void queue_addOrder(struct Queue* queue, int floor, enum ElevatorOrder order);
 
 /**
  * @brief Method for removing orders for a floor from a queue.
  *
- * @warning Takes a floor not an index, starts counting at 1.
  * @param[in,out] queue Queue the order is cleared from.
  * @param[in] floor The floor where orders are cleared.
  */
-void queue_clearOrder(Queue* queue, int floor);
+void queue_clearOrder(struct Queue* queue, int floor);
 
 /**
  * @brief Returns the next floor the elevator should go to. 
  * Prioritizes floors in the direction the elevator is already going.
  * 
  * @param[in] queue Queue object owned by the elevator.
- * @param[in] latestFloor Last floor the elevator visited. Does not care if the elevator stopped there or not.
+ * @param[in] lastFloor Last floor the elevator visited. Does not care if the elevator stopped there or not.
  * @param[in] currentDir The direction the elevator is travelling in.
  * 
- * @return Returns the next floor the elevator should go to as an int from 1-4. Returns 0 if there are no orders. 
+ * @return Returns the next floor the elevator should go to as an int from 0-3. Returns -1 if there are no orders. 
  */
-int queue_getNext(Queue* queue, int lastesFloor, int currentDir);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+int queue_getNext(struct Queue* queue, int lastFloor, int targetFloor, int currentDir);
 
 
 

@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <signal.h>
 #include "hardware.h"
-#include "fsm.h"
+#include "elevator.h"
+#include "queue.h"
+#include "time.h"
 
 static void clear_all_order_lights(){
     HardwareOrder order_types[3] = {
@@ -26,90 +28,11 @@ int main(){
         fprintf(stderr, "Unable to initialize hardware\n");
         exit(1);
     }
-    
+
     struct Elevator elev;
-    elev.startTime = 0;
-    elev.currentState = 0;
+    elevator_init(&elev);
 
-    printf("=== Example Program ===\n");
-    printf("Press the stop button on the elevator panel to exit\n");
-
-    hardware_command_movement(HARDWARE_MOVEMENT_UP);
-    int iteration = 0;
-    while(1){
-        //Elevator variabel-oppdateringer
-        elev.obstruction = hardware_read_obstruction_signal();
-        elev.stop_button = hardware_read_stop_signal();
-        getTimer(&elev);
-
-
-
-        if(hardware_read_stop_signal()){
-            hardware_command_movement(HARDWARE_MOVEMENT_STOP);
-            break;
-        }
-
-        /* Code block that makes the elevator go up when it reach the botton*/
-        if(hardware_read_floor_sensor(0)){
-            hardware_command_movement(HARDWARE_MOVEMENT_UP);
-        }
-
-        /* Code block that makes the elevator go down when it reach the top floor*/
-        if(hardware_read_floor_sensor(HARDWARE_NUMBER_OF_FLOORS - 1)){
-            hardware_command_movement(HARDWARE_MOVEMENT_DOWN);
-        }
-
-        //stop-logikk:
-        
-        if ((elev.obstruction && elev.open_door) || elev.stop_button || hardware_read_order(1, HARDWARE_ORDER_INSIDE) || getTimer(&elev) < 3) {
-            elev.currentState = STOP;
-            hardware_command_movement(HARDWARE_MOVEMENT_STOP);      
-            stopElev();
-
-            //works, but doesnt start motor again
-        }
-
-        
-
-
-
-
-        /* All buttons must be polled, like this: */
-        for(int f = 0; f < HARDWARE_NUMBER_OF_FLOORS; f++){
-            if(hardware_read_floor_sensor(f)){
-                hardware_command_floor_indicator_on(f);
-            }
-        }
-
-        /* Lights are set and cleared like this: */
-        for(int f = 0; f < HARDWARE_NUMBER_OF_FLOORS; f++){
-            /* Internal orders */
-            if(hardware_read_order(f, HARDWARE_ORDER_INSIDE)){
-                //call queue add command
-                //setNextFloor(elev,f)
-                hardware_command_order_light(f, HARDWARE_ORDER_INSIDE, 1);
-            }
-
-            /* Orders going up */
-            if(hardware_read_order(f, HARDWARE_ORDER_UP)){
-                hardware_command_order_light(f, HARDWARE_ORDER_UP, 1);
-            }
-
-            /* Orders going down */
-            if(hardware_read_order(f, HARDWARE_ORDER_DOWN)){
-                hardware_command_order_light(f, HARDWARE_ORDER_DOWN, 1);
-            }
-        }
-
-        /* Code to clear all lights given the obstruction signal */
-        if(hardware_read_obstruction_signal()){
-            hardware_command_stop_light(1);
-            clear_all_order_lights();
-        }
-        else{
-            hardware_command_stop_light(0);
-        }
-    }
-
+    elevator_loop(&elev);
+    
     return 0;
 }
