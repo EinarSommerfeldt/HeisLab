@@ -8,9 +8,18 @@
 #include <stdlib.h>
 #include "structs.h"
 
+enum ElevatorOrder{
+    ORDER_NONE,
+    ORDER_UP,
+    ORDER_DOWN,
+    ORDER_BOTH,
+    ORDER_INSIDE
+};
 
+struct Queue{
+    enum ElevatorOrder orders[4];
+};
 
-//Queue funksjoner------------------------------------------------------------------------------------------
 /**
  * @brief Konstruktør for Kø-objektet.
  *

@@ -13,6 +13,26 @@
 #include "fsm.h"
 #include <stdlib.h>
 
+enum State{
+    INIT,
+    RUNNING,
+    STILL,
+    OPEN,
+    OBSTRUCTED,
+    EMERGENCY
+};
+
+struct Elevator{
+    enum State currentState;
+    struct Queue* queue;
+    int direction; //1 opp 0 ned
+    int lastFloor;
+    int targetFloor;
+    int obstruction;
+    int stopButton;
+    int startTime;
+    int onFloor; //1 if elevator is on a floor 
+};
 
 /**
  * @brief Metode for å initialisere alle variabler i Elevator structet.
