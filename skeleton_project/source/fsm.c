@@ -34,7 +34,7 @@ void fsm_update(struct Elevator* elev)
             elev->currentState = EMERGENCY;
         } else if (elev->obstruction) {
             elev->currentState = OBSTRUCTED;
-        } else if (timer_get(&elev->startTime) > 2 ) {
+        } else if (timer_get(elev->startTime) > 2 ) {
             elev->currentState = RUNNING;
         }
         break;
@@ -51,7 +51,7 @@ void fsm_update(struct Elevator* elev)
             elev->currentState = OPEN;
             timer_start(&elev->startTime);
         } else if (!elev->stopButton) {
-            elev->currentState = RUNNING;
+            elev->currentState = STILL;
         }
         break;
     } 

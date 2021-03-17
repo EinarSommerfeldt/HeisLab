@@ -6,6 +6,6 @@ void timer_start(int* startTime) {
 }
 
 
-int timer_get(int* startTime) {
-    return time(NULL) - *startTime; 
+int timer_get(int startTime) {
+    return time(NULL) - startTime; 
 }

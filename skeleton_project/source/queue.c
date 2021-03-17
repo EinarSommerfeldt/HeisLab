@@ -29,7 +29,7 @@ void queue_clearOrder(struct Queue* queue, int floor) {
     queue->orders[floor] = ORDER_NONE;
 }
 
-int queue_getNext(struct Queue* queue, int lastFloor , int targetFloor, int currentDir) {
+int queue_getNext(struct Queue* queue, int lastFloor, int currentDir) {
     if (lastFloor < 0) {
         return -1;
     }

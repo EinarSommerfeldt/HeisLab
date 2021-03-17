@@ -20,16 +20,18 @@ void elevator_loop(struct Elevator* elev) {
         
         iterator++;
         if (iterator%100 == 0) {
-            printf("State: %d, timer: %d, target: %d\n", elev->currentState, timer_get(&(elev->startTime)), elev->targetFloor);
-            for (int i = 0; i < 4; i++) {
-                printf("Order floor %d: %d\n", i, elev->queue->orders[i]);
-                printf("Onfloor: %d\n", elev->onFloor);
-            }
+            printf("State: %d, timer: %d, target: %d\n", elev->currentState, timer_get(elev->startTime), elev->targetFloor);
+
         }  
         
         elevator_update(elev);
-        
-        switch (elev->currentState)
+        elevator_performState(elev);
+    }
+}
+
+void elevator_performState(struct Elevator* elev)
+{
+    switch (elev->currentState)
         {
         case INIT: //Will move up until it hits a floor
             hardware_command_door_open(0);
@@ -62,6 +64,7 @@ void elevator_loop(struct Elevator* elev) {
             hardware_command_door_open(1);
             break;
         case EMERGENCY:
+            hardware_command_movement(HARDWARE_MOVEMENT_STOP);
             if (elev->onFloor) {
                 hardware_command_door_open(1);
             } else {
@@ -69,7 +72,6 @@ void elevator_loop(struct Elevator* elev) {
             }
             break;
         } 
-    }
 }
 
 void elevator_getOrder(struct Elevator* elev) {
@@ -106,19 +108,21 @@ void elevator_update(struct Elevator* elev) {
         }
         elev->onFloor = 0;
     }
-    //Stopp button
+    //Stop button
     elev->stopButton = hardware_read_stop_signal();
     if (hardware_read_stop_signal()) {
-        elevator_OnStopButton(elev);
+        elevator_onStopButton(elev);
     } else {
         hardware_command_stop_light(0);
     }
     
     fsm_update(elev);
-    elev->targetFloor = queue_getNext(elev->queue, elev->lastFloor, elev->targetFloor, elev->direction);
+
     if (elev->currentState != EMERGENCY && elev->currentState != INIT) {
         elevator_getOrder(elev);
     }
+
+    elev->targetFloor = queue_getNext(elev->queue, elev->lastFloor, elev->direction);  
 }
 
 void elevator_reachedFloor(struct Elevator* elev, int floor)
@@ -136,7 +140,7 @@ void elevator_reachedFloor(struct Elevator* elev, int floor)
     
 }
 
-void elevator_OnStopButton(struct Elevator* elev){
+void elevator_onStopButton(struct Elevator* elev){
     hardware_command_stop_light(1);
     for(int f = 0; f < HARDWARE_NUMBER_OF_FLOORS; f++){
         for(int i = 0; i < 3; i++){

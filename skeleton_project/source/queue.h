@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief Queue-system for the elevator
+ * @brief Queue-modulen til heissystemet. Håndterer bestillingene heisen tar inn og hvilken rekkefølge de skal betjenes
  */
 #ifndef QUEUE_H
 #define QUEUE_H
@@ -12,40 +12,40 @@
 
 //Queue funksjoner------------------------------------------------------------------------------------------
 /**
- * @brief Constructor for the Queue object.
+ * @brief Konstruktør for Kø-objektet.
  *
- * @return Pointer to the new Queue object.
+ * @return Peker til det nye objektet.
  */
 struct Queue* queue_new();
 
 /**
- * @brief Method for adding an order to a queue.
+ * @brief Metode for å legge til en ny bestilling i køen.
  *
- * @param[in,out] queue Queue the order is added to.
- * @param[in] floor The floor the order came from.
- * @param[in] order Which direction was pressed.
+ * @param[in,out] queue Køen bestillingen legges til i.
+ * @param[in] floor Etasje bestillingen kom fra.
+ * @param[in] order Hva slags type bestilling det var (UP, DOWN, INSIDE).
  */
 void queue_addOrder(struct Queue* queue, int floor, enum ElevatorOrder order);
 
 /**
- * @brief Method for removing orders for a floor from a queue.
+ * @brief Metode for å fjerne alle bestillinger på en etasje fra køen.
  *
- * @param[in,out] queue Queue the order is cleared from.
- * @param[in] floor The floor where orders are cleared.
+ * @param[in,out] queue Køen bestillingene fjernes fra.
+ * @param[in] floor Etasje bestillingene skal fjernes fra.
  */
 void queue_clearOrder(struct Queue* queue, int floor);
 
 /**
- * @brief Returns the next floor the elevator should go to. 
- * Prioritizes floors in the direction the elevator is already going.
+ * @brief Metode for å finne neste bestilling heisen skal betjene.
+ * Prioriterer bestillinger i samme retning som heisen allerede går.
  * 
- * @param[in] queue Queue object owned by the elevator.
- * @param[in] lastFloor Last floor the elevator visited. Does not care if the elevator stopped there or not.
- * @param[in] currentDir The direction the elevator is travelling in.
+ * @param[in] queue Kø-objektet heisen eier.
+ * @param[in] lastFloor Siste etasje heisen var innom, bryr seg ikke om heisen stoppet der eller ikke.
+ * @param[in] currentDir Retningen heisen kjører i.
  * 
- * @return Returns the next floor the elevator should go to as an int from 0-3. Returns -1 if there are no orders. 
+ * @return Den neste etasjen heisen skal kjøre til som en int på intervallet 0-3. Returnerer -1 hvis køen er tom. 
  */
-int queue_getNext(struct Queue* queue, int lastFloor, int targetFloor, int currentDir);
+int queue_getNext(struct Queue* queue, int lastFloor, int currentDir);
 
 
 
