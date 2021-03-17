@@ -1,4 +1,4 @@
-SIM := false
+SIM := true
 SOURCES := main.c elevator.c queue.c timer.c fsm.c
 
 SOURCE_DIR := source
@@ -16,7 +16,7 @@ endif
 
 CC := gcc
 CFLAGS := -O0 -g3 -Wall -D_GNU_SOURCE -std=c11 -I$(SOURCE_DIR)
-LDFLAGS := -L$(BUILD_DIR) -ldriver -lcomedi 
+LDFLAGS := -L$(BUILD_DIR) -ldriver //-lcomedi 
 
 .DEFAULT_GOAL := elevator
 
