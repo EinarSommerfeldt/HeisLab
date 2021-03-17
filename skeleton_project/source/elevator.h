@@ -13,25 +13,34 @@
 #include "fsm.h"
 #include <stdlib.h>
 
-enum State{
-    INIT,
-    RUNNING,
-    STILL,
-    OPEN,
-    OBSTRUCTED,
-    EMERGENCY
+/**
+ * @brief Enum for hvilke tilstander heisen kan være i
+ */
+enum State{ 
+    INIT, /**< Heisen har nettopp startet og beveger seg til en definert tilstand */
+    RUNNING, /**< Heisen er i vanlig drift og beveger seg */
+    STILL, /**< Heisen er i vanlig drift og står stille */
+    OPEN, /**< Heisen er i vanlig drift og har døra åpen */
+    OBSTRUCTED, /**< Det er en obstruksjon i døråpningen og heisen står åpen*/
+    EMERGENCY /**< Stopp-knappen er trykket og heisen står stille uten å ta imot ordre */
+    
 };
 
+/**
+ * @brief Struct for Elevator-modulen
+ */
 struct Elevator{
-    enum State currentState;
-    struct Queue* queue;
-    int direction; //1 opp 0 ned
-    int lastFloor;
-    int targetFloor;
-    int obstruction;
-    int stopButton;
-    int startTime;
-    int onFloor; //1 if elevator is on a floor 
+    /*@{*/
+    enum State currentState; /**< Tilstanden til heisen */
+    struct Queue* queue; /**< Kømodulen til heisen */
+    int direction; /**< Retningen heisen beveger seg i */
+    int lastFloor; /**< Siste etasje heisen kjørte forbi */
+    int targetFloor; /**< Etasjen heisen skal til */
+    int obstruction; /**< Obstruksjonsbryteren, 1 = på, 0 = av*/
+    int stopButton; /**< Stoppknappen, 1 = på, 0 = av*/
+    int startTime; /**< Tiden timeren sist ble startet på, starter på systemtiden*/
+    int onFloor; /**< Bool som beskriver om står på en etasje eller ikke, 1 = på, 0 = av */
+    /*@}*/
 };
 
 /**
@@ -49,7 +58,8 @@ void elevator_init(struct Elevator* elev);
 void elevator_loop(struct Elevator* elev);
 
 /**
- * @brief Metode for heisens oppførsel basaert på hvilken tilstand den er i.
+ * @brief Metode som bestemmer heisens oppførsel basaert på hvilken tilstand den er i.
+ * Denne metoden håndterer alt som har med heisens bevegelse å gjøre.
  *
  * @param[in,out] elev Elevator struct metoden hører til.
  */

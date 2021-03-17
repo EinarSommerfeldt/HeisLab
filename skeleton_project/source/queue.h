@@ -8,16 +8,24 @@
 #include <stdlib.h>
 #include "structs.h"
 
+/**
+ * @brief Enum for typen bestillinger som kan ligge i køen
+ */
 enum ElevatorOrder{
-    ORDER_NONE,
-    ORDER_UP,
-    ORDER_DOWN,
-    ORDER_BOTH,
-    ORDER_INSIDE
+    ORDER_NONE, /**< Ingen bestilling */
+    ORDER_UP, /**< Bestilling oppover */
+    ORDER_DOWN, /**< Bestilling nedover */
+    ORDER_BOTH, /**< Bestilling begge veier */
+    ORDER_INSIDE /**< Bestilling fra inne i heisen */
 };
 
+/**
+ * @brief Struct for Queue-modulen
+ */
 struct Queue{
-    enum ElevatorOrder orders[4];
+    /*@{*/
+    enum ElevatorOrder orders[4]; /**< Liste med bestillinger, et element per etajse */
+    /*@}*/
 };
 
 /**

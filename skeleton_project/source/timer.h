@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief Timer-modul for heissystemet. 
+ * @brief Timer-modulen til heissystemet. 
  */
 #ifndef TIMER_H
 #define TIMER_H
