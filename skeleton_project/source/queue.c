@@ -2,7 +2,6 @@
  * @file
  */
 #include "queue.h"
-#include "structs.h"
 #include <stdio.h>
 
 

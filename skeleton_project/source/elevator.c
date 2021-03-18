@@ -115,9 +115,10 @@ void elevator_update(struct Elevator* elev) {
     } else {
         hardware_command_stop_light(0);
     }
-    
+    //updates state machine before taking new orders incase new state i emergency
     fsm_update(elev);
 
+    
     if (elev->currentState != EMERGENCY && elev->currentState != INIT) {
         elevator_getOrder(elev);
     }
@@ -129,7 +130,7 @@ void elevator_reachedFloor(struct Elevator* elev, int floor)
 {
     elev->onFloor = 1;
     elev->lastFloor = floor;
-    if (elev->targetFloor == elev->lastFloor) {
+    if (elev->targetFloor == elev->lastFloor) { //clears all lights if the floor is stoppped on
         elev->queue->orders[floor] = ORDER_NONE;
         queue_clearOrder(elev->queue, floor);
         hardware_command_order_light(floor, HARDWARE_ORDER_DOWN, 0);
@@ -142,13 +143,13 @@ void elevator_reachedFloor(struct Elevator* elev, int floor)
 
 void elevator_onStopButton(struct Elevator* elev){
     hardware_command_stop_light(1);
-    for(int f = 0; f < HARDWARE_NUMBER_OF_FLOORS; f++){
+    for(int f = 0; f < HARDWARE_NUMBER_OF_FLOORS; f++){ //clears all order lights
         for(int i = 0; i < 3; i++){
             HardwareOrder type = (HardwareOrder)i;
             hardware_command_order_light(f, type, 0);
         }
     }
-    for(int f = 0; f < HARDWARE_NUMBER_OF_FLOORS; f++) {
+    for(int f = 0; f < HARDWARE_NUMBER_OF_FLOORS; f++) { //clears all orders
         elev->queue->orders[f] = ORDER_NONE;
     }
     hardware_command_movement(HARDWARE_MOVEMENT_STOP);   

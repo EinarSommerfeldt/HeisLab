@@ -6,7 +6,6 @@
 #define QUEUE_H
 
 #include <stdlib.h>
-#include "structs.h"
 
 /**
  * @brief Enum for typen bestillinger som kan ligge i køen
