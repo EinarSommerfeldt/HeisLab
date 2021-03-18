@@ -1,8 +1,8 @@
 #include "timer.h"
 
 
-void timer_start(int* startTime) {
-    *startTime = time(NULL);
+void timer_start(int* p_startTime) {
+    *p_startTime = time(NULL);
 }
 
 

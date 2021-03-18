@@ -10,9 +10,9 @@
 /**
  * @brief Metode for å oppdatere tilstanden @c state til heisen. 
  *
- * @param[in,out] elev Elevator struct metoden oppdaterer tilstanden til.
+ * @param[in,out] p_elev Elevator struct metoden oppdaterer tilstanden til.
  */
-void fsm_update(struct Elevator* elev); 
+void fsm_update(struct Elevator* p_elev); 
 
 
 

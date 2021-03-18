@@ -9,9 +9,9 @@
 /**
  * @brief Metode for å starte timeren, setter verdien til pekeren lik systemtiden
  *
- * @param[out] startTime peker til variabelen som settes lik systemtiden
+ * @param[out] p_startTime peker til variabelen som settes lik systemtiden
  */
-void timer_start(int* startTime);
+void timer_start(int* p_startTime);
 
 /**
  * @brief Metode for å få tiden det har gått siden timeren ble startet.
