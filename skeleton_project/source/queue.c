@@ -2,7 +2,6 @@
  * @file
  */
 #include "queue.h"
-#include <stdio.h>
 
 
 struct Queue* queue_new()
@@ -33,8 +32,16 @@ int queue_getNext(struct Queue* p_queue, int lastFloor, int currentDir) {
         return -1;
     }
     if (currentDir) { //The elevator is going up
-        for (int i = lastFloor; i < 4; i++) {
-            if(p_queue->orders[i] == ORDER_UP || p_queue->orders[i] == ORDER_INSIDE || p_queue->orders[i] == ORDER_BOTH) {
+        for (int i = lastFloor; i < 4; i++) { 
+            if(p_queue->orders[i] == ORDER_UP || p_queue->orders[i] == ORDER_BOTH) { //Ignores orders in the wrong direction
+                return i;
+            }
+            if (p_queue->orders[i] == ORDER_INSIDE && i != lastFloor) { //Makes sure the elevator doesnt turn mid-movement
+                return i;
+            }
+        }
+        for (int i = lastFloor+1; i < 4; i++) {
+            if( p_queue->orders[i] == ORDER_INSIDE) {
                 return i;
             }
         }
@@ -44,11 +51,14 @@ int queue_getNext(struct Queue* p_queue, int lastFloor, int currentDir) {
             }
         }
     } else {    //The elevator is going down
-        for (int i = lastFloor; i > -1; i--) { 
-            if(p_queue->orders[i] == ORDER_DOWN || p_queue->orders[i] == ORDER_INSIDE || p_queue->orders[i] == ORDER_BOTH) {
+        for (int i = lastFloor; i > -1; i--) {  
+            if(p_queue->orders[i] == ORDER_DOWN || p_queue->orders[i] == ORDER_BOTH) {//Ignores orders in the wrong direction
                 return i;
             }
-        }
+            if (p_queue->orders[i] == ORDER_INSIDE && i != lastFloor) { //Makes sure the elevator doesnt turn mid-movement
+                return i;
+            }
+        } 
         for (int i = 0; i < 4; i++) { 
             if(p_queue->orders[i] != ORDER_NONE) {
                 return i;

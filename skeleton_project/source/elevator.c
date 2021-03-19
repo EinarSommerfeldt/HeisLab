@@ -1,5 +1,4 @@
 #include "elevator.h"
-#include <stdio.h>
 
 
 void elevator_init(struct Elevator* p_elev) {
@@ -17,13 +16,6 @@ void elevator_init(struct Elevator* p_elev) {
 void elevator_loop(struct Elevator* p_elev) {
     int iterator = 0;
     while (1) {
-        
-        iterator++;
-        if (iterator%100 == 0) {
-            printf("State: %d, timer: %d, target: %d\n", p_elev->currentState, timer_get(p_elev->startTime), p_elev->targetFloor);
-
-        }  
-        
         elevator_update(p_elev);
         elevator_performState(p_elev);
     }

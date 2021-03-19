@@ -5,7 +5,6 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include <stdlib.h>
 
 /**
  * @brief Enum for typen bestillinger som kan ligge i køen
@@ -28,7 +27,7 @@ struct Queue{
 };
 
 /**
- * @brief Konstruktør for Kø-objektet.
+ * @brief Konstruktør for Queue-objektet.
  *
  * @return Peker til det nye objektet.
  */
