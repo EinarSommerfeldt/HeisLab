@@ -107,7 +107,7 @@ void elevator_update(struct Elevator* p_elev) {
     } else {
         hardware_command_stop_light(0);
     }
-    //updates state machine before taking new orders incase new state i emergency
+    //updates state machine before taking new orders incase new state is emergency
     fsm_update(p_elev);
 
     
